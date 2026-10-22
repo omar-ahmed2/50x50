@@ -1,0 +1,6 @@
+{
+  "name": "فيفي 50×50 - نظام إدارة المحل",
+  "description": "نظام متكامل لإدارة المبيعات والمخزون وحسابات الشكك والمالية والجرد لمحل المنظفات المنزلية فيفي 50×50",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

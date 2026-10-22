@@ -1,0 +1,24 @@
+@import "tailwindcss";
+
+@layer base {
+  html, body {
+    font-family: 'Cairo', system-ui, -apple-system, sans-serif;
+    direction: rtl;
+  }
+
+  .tabular-nums {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  .print-only {
+    display: block !important;
+  }
+  body {
+    background: #ffffff !important;
+  }
+}
