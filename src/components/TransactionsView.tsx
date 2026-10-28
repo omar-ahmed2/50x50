@@ -337,6 +337,7 @@ export const TransactionsView: React.FC<TransactionsViewProps> = ({ data }) => {
   }, [allTransactions, fromDate, toDate, typeFilter, productFilter, customerFilter, methodFilter, searchQuery]);
 
   return (
+
     <div className="space-y-6">
       {/* Header */}
       <div className="bg-white rounded-2xl border border-slate-200/90 p-5 flex flex-wrap items-center justify-between gap-4">
