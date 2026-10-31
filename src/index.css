@@ -1,7 +1,8 @@
 @import "tailwindcss";
 
 @layer base {
-  html, body {
+  html,
+  body {
     font-family: 'Cairo', system-ui, -apple-system, sans-serif;
     direction: rtl;
   }
@@ -14,9 +15,6 @@
 @media print {
   .no-print {
     display: none !important;
-  }
-  .print-only {
-    display: block !important;
   }
   body {
     background: #ffffff !important;

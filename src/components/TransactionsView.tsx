@@ -574,6 +574,7 @@ export const TransactionsView: React.FC<TransactionsViewProps> = ({ data }) => {
           </div>
         </div>
       )}
+
     </div>
   );
 };

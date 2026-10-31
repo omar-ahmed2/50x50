@@ -1,9 +1,3 @@
-/**
- * Core Domain & Financial Calculations for "فيفي 50×50"
- * Uses exact integer scaling (10,000x for unit costs, 100x for EGP currency piasters)
- * to eliminate IEEE-754 floating-point drift in monetary and inventory calculations.
- */
-
 export type ProductType = 'individual' | 'carton' | 'bulk_liquid' | 'packaged_liquid';
 export type BaseUnit = 'unit' | 'ml' | 'container';
 export type SellingUnitMode = 'unit' | 'carton' | 'ml' | 'liter' | 'container';

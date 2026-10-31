@@ -539,6 +539,7 @@ export const Layout: React.FC<LayoutProps> = ({
         {/* Page Content */}
         <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-[1440px] w-full mx-auto">
           {children}
+
         </main>
       </div>
     </div>

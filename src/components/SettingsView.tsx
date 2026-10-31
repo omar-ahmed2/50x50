@@ -421,7 +421,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({ data, onRefresh }) =
                   أمان الحساب وتغيير كلمة المرور
                 </h3>
                 <p className="text-xs text-slate-500">
-                  تشفير كلمات المرور بخوارزمية scrypt على الخادم.
+                  تُحفظ بيانات الدخول محلياً على متصفحك.
                 </p>
               </div>
             </div>
@@ -486,10 +486,10 @@ export const SettingsView: React.FC<SettingsViewProps> = ({ data, onRefresh }) =
             <Database className="w-6 h-6 text-blue-600" />
             <div>
               <h3 className="text-base font-extrabold text-slate-900">
-                النسخ الاحتياطي واستعادة البيانات (Backup & Restore)
+                النسخ الاحتياطي واستعادة البيانات (محلياً على المتصفح)
               </h3>
               <p className="text-xs text-slate-500">
-                يحتفظ النظام بنسخ احتياطية تلقائية عند كل عملية بيع أو شراء أو جرد، مع إمكانية التصدير اليدوي والاستعادة الفورية.
+                تُحفظ كافة البيانات مباشرة في المتصفح (LocalStorage) بدون الحاجة لخادم أو قاعدة بيانات خارجية، مع إمكانية التصدير والاستعادة في أي وقت.
               </p>
             </div>
           </div>
@@ -512,7 +512,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({ data, onRefresh }) =
               className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold flex items-center gap-1.5 cursor-pointer"
             >
               <ShieldCheck className="w-4 h-4" />
-              <span>إنشاء نسخة فورية على الخادم</span>
+              <span>حفظ نقطة استعادة في المتصفح</span>
             </button>
 
             <label className="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-white text-xs font-bold flex items-center gap-1.5 cursor-pointer">
@@ -532,27 +532,24 @@ export const SettingsView: React.FC<SettingsViewProps> = ({ data, onRefresh }) =
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 text-xs">
           <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-2">
             <div className="font-extrabold text-slate-900">
-              إجراءات النسخ الاحتياطي والاستعادة الموثقة:
+              طريقة حفظ البيانات والنسخ الاحتياطي:
             </div>
             <ol className="list-decimal list-inside space-y-1.5 text-slate-600 leading-relaxed">
               <li>
-                <strong>التخزين الأساسي:</strong> تُحفظ كافة السجلات في قاعدة بيانات SQLite علائقية على الخادم (`data/fifi_50x50.sqlite`) بنظام المعاملات الذرية (ACID Transactions).
+                <strong>تخزين فوري بالمتصفح:</strong> تُحفظ كافة الفواتير والمنتجات وحسابات الشكك محلياً داخل المتصفح (`LocalStorage`) بشكل تلقائي وفوري.
               </li>
               <li>
-                <strong>النسخ التلقائي:</strong> يُنشئ الخادم نسخة احتياطية تلقائية في المجلد (`data/backups/`) عقب كل عملية بيع أو توريد أو تحصيل شكك أو جرد.
+                <strong>النسخ اليدوي الخارجي:</strong> اضغط على «تصدير نسخة احتياطية كاملة (JSON)» لتحميل ملف البيانات على جهازك الشخصي أو فلاشة خارجية.
               </li>
               <li>
-                <strong>النسخ اليدوي الخارجي:</strong> اضغط على «تصدير نسخة احتياطية كاملة (JSON)» لحفظ نسخة على جهازك الشخصي أو فلاشة خارجية في نهاية اليوم.
-              </li>
-              <li>
-                <strong>خطوات الاستعادة:</strong> اضغط على «استعادة من ملف نسخة احتياطية» واختر ملف `.json` المُصدّر؛ سيقوم النظام تلقائياً بأخذ نسخة أمان احتياطية من الحالة الحالية قبل استبدال الجداول واستعادة كافة الأرصدة والفواتير.
+                <strong>خطوات الاستعادة:</strong> اضغط على «استعادة من ملف نسخة احتياطية» واختر ملف `.json` المُصدّر لاسترجاع كافة الأرصدة والفواتير فوراً.
               </li>
             </ol>
           </div>
 
           <div>
             <div className="font-extrabold text-slate-900 mb-2">
-              أحدث النسخ الاحتياطية المحفوظة على الخادم ({data.backups?.length || 0})
+              نقاط الاستعادة المحفوظة بالمتصفح ({data.backups?.length || 0})
             </div>
             {!data.backups || data.backups.length === 0 ? (
               <div className="p-6 text-center text-slate-400 border border-slate-200 rounded-xl">
@@ -575,6 +572,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({ data, onRefresh }) =
                 ))}
               </div>
             )}
+
           </div>
         </div>
       </div>

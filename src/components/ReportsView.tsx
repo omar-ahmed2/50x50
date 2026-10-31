@@ -7,7 +7,6 @@ import {
   formatCurrency,
   formatDateAr,
   formatNumber,
-  getBaseUnitLabel,
   getFormattedProductStock,
   getPaymentMethodLabel,
   getProductStockStatus,
@@ -75,11 +74,9 @@ export const ReportsView: React.FC<ReportsViewProps> = ({ data }) => {
     return d >= fromDate && d <= toDate;
   };
 
-  // Build tabular headers, rows, and summary cards dynamically for all 16 reports
   const reportContent = useMemo(() => {
     const activeReportMeta = REPORT_LIST.find((r) => r.key === activeReport)!;
 
-    // 1 & 2: Daily Sales / Sales by Range
     if (activeReport === 'daily_sales' || activeReport === 'sales_by_range') {
       const salesList = data.sales.filter((s) => inRange(s.sale_date));
       const totalNet = roundMoney(salesList.reduce((a, b) => a + Number(b.total_amount), 0));
@@ -119,21 +116,19 @@ export const ReportsView: React.FC<ReportsViewProps> = ({ data }) => {
       };
     }
 
-    // 3: Sales by Product
     if (activeReport === 'sales_by_product') {
       const validSaleIds = new Set(
         data.sales.filter((s) => inRange(s.sale_date)).map((s) => s.id)
       );
       const map = new Map<
         number,
-        { name: string; sku: string; baseQty: number; revenue: number; cogs: number }
+        { name: string; baseQty: number; revenue: number; cogs: number }
       >();
 
       for (const si of data.saleItems) {
         if (!validSaleIds.has(si.sale_id)) continue;
         const cur = map.get(si.product_id) || {
           name: si.product_name_snapshot,
-          sku: si.sku_snapshot,
           baseQty: 0,
           revenue: 0,
           cogs: 0,
@@ -155,7 +150,7 @@ export const ReportsView: React.FC<ReportsViewProps> = ({ data }) => {
         ],
         headers: [
           'اسم المنتج',
-          'صافي الكمية المباعة (وحدة أساس)',
+          'صافي الكمية المباعة',
           'إجمالي المبيعات',
           'التكلفة التاريخية (COGS)',
           'مجمل ربح الصنف',
@@ -170,7 +165,6 @@ export const ReportsView: React.FC<ReportsViewProps> = ({ data }) => {
       };
     }
 
-    // 4: Sales by Category
     if (activeReport === 'sales_by_category') {
       const validSaleIds = new Set(
         data.sales.filter((s) => inRange(s.sale_date)).map((s) => s.id)
@@ -208,7 +202,6 @@ export const ReportsView: React.FC<ReportsViewProps> = ({ data }) => {
       };
     }
 
-    // 5 & 6: Gross Profit & Operating Profit
     if (activeReport === 'gross_profit' || activeReport === 'operating_profit') {
       const periodSales = data.sales.filter((s) => inRange(s.sale_date));
       const periodReturns = data.salesReturns.filter((r) => inRange(r.return_date));
@@ -254,7 +247,6 @@ export const ReportsView: React.FC<ReportsViewProps> = ({ data }) => {
       };
     }
 
-    // 7, 8, 9: Current Stock, Low Stock, Inventory Valuation
     if (
       activeReport === 'current_stock' ||
       activeReport === 'low_stock' ||
@@ -284,16 +276,16 @@ export const ReportsView: React.FC<ReportsViewProps> = ({ data }) => {
         headers: [
           'اسم المنتج',
           'التصنيف',
-          'نوع المنتج',
+          'طريقة البيع',
           'الكمية المتاحة',
-          'متوسط تكلفة الوحدة الأساسية',
+          'متوسط تكلفة الوحدة',
           'إجمالي القيمة بالمخزن',
           'الحالة',
         ],
         rows: productsList.map((p) => [
           p.name,
-          p.category_name || 'عام',
-          getProductTypeLabel(p.product_type),
+          p.category_name || 'بدون تصنيف',
+          getProductTypeLabel(p),
           getFormattedProductStock(p).primaryText,
           formatCurrency(
             p.product_type === 'bulk_liquid'
@@ -306,7 +298,6 @@ export const ReportsView: React.FC<ReportsViewProps> = ({ data }) => {
       };
     }
 
-    // 10: Customer Debts Report
     if (activeReport === 'customer_debts') {
       const totalDebt = roundMoney(
         data.customers.reduce((a, b) => a + Number(b.current_balance), 0)
@@ -338,7 +329,6 @@ export const ReportsView: React.FC<ReportsViewProps> = ({ data }) => {
       };
     }
 
-    // 11: Customer Account Statement
     if (activeReport === 'customer_statement') {
       const cust = data.customers.find((c) => String(c.id) === selectedCustomerId);
       const custSales = data.sales.filter(
@@ -390,7 +380,6 @@ export const ReportsView: React.FC<ReportsViewProps> = ({ data }) => {
       };
     }
 
-    // 12: Customer Collections Report
     if (activeReport === 'customer_collections') {
       const cols = data.payments.filter(
         (p) => p.payment_type === 'debt_collection' && inRange(p.payment_date)
@@ -424,7 +413,6 @@ export const ReportsView: React.FC<ReportsViewProps> = ({ data }) => {
       };
     }
 
-    // 13: Purchases Report
     if (activeReport === 'purchases_report') {
       const purs = data.purchases.filter((p) => inRange(p.purchase_date));
       const totalCost = roundMoney(purs.reduce((a, b) => a + Number(b.total_cost), 0));
@@ -459,7 +447,6 @@ export const ReportsView: React.FC<ReportsViewProps> = ({ data }) => {
       };
     }
 
-    // 14: Operating Expenses Report
     if (activeReport === 'expenses_report') {
       const exps = data.expenses.filter((e) => inRange(e.expense_date));
       const totalExp = roundMoney(exps.reduce((a, b) => a + Number(b.amount), 0));
@@ -482,7 +469,6 @@ export const ReportsView: React.FC<ReportsViewProps> = ({ data }) => {
       };
     }
 
-    // 15: Cash Movement Report
     if (activeReport === 'cash_movement') {
       const cms = data.cashMovements.filter((cm) => inRange(cm.movement_date));
       const totalIn = roundMoney(
@@ -511,7 +497,6 @@ export const ReportsView: React.FC<ReportsViewProps> = ({ data }) => {
       };
     }
 
-    // 16: Stocktake Discrepancy Report
     const stIds = new Set(
       data.stocktakes.filter((s) => inRange(s.stocktake_date)).map((s) => s.id)
     );
@@ -547,7 +532,6 @@ export const ReportsView: React.FC<ReportsViewProps> = ({ data }) => {
 
   return (
     <div className="space-y-6">
-      {/* Header & Export/Print Controls */}
       <div className="no-print bg-white rounded-2xl border border-slate-200/90 p-5 flex flex-wrap items-center justify-between gap-4">
         <div>
           <h2 className="text-lg font-extrabold text-slate-900">
@@ -583,7 +567,6 @@ export const ReportsView: React.FC<ReportsViewProps> = ({ data }) => {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-        {/* Right Sidebar: 16 Reports Selector */}
         <div className="no-print lg:col-span-4 bg-white rounded-2xl border border-slate-200/90 p-3 space-y-1 max-h-[75vh] overflow-y-auto">
           {REPORT_LIST.map((r) => (
             <button
@@ -600,9 +583,7 @@ export const ReportsView: React.FC<ReportsViewProps> = ({ data }) => {
           ))}
         </div>
 
-        {/* Left Main Report Area */}
         <div className="lg:col-span-8 bg-white rounded-2xl border border-slate-200/90 p-6 space-y-5">
-          {/* Report Header & Filters */}
           <div className="flex flex-wrap items-center justify-between gap-4 border-b border-slate-200 pb-4">
             <div>
               <div className="text-xs font-bold text-blue-600">
@@ -659,7 +640,6 @@ export const ReportsView: React.FC<ReportsViewProps> = ({ data }) => {
             </div>
           </div>
 
-          {/* Summary KPI Strip */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             {reportContent.summaryCards.map((card, i) => (
               <div
@@ -674,7 +654,6 @@ export const ReportsView: React.FC<ReportsViewProps> = ({ data }) => {
             ))}
           </div>
 
-          {/* Report Data Table */}
           {reportContent.rows.length === 0 ? (
             <div className="py-12 text-center">
               <BarChart3 className="w-10 h-10 text-slate-300 mx-auto mb-2" />

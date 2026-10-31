@@ -1,8 +1,3 @@
-/**
- * @license
- * SPDX-License-Identifier: Apache-2.0
- */
-
 import React, { useCallback, useEffect, useState } from 'react';
 import { CreditAccountsView } from './components/CreditAccountsView';
 import { DashboardView } from './components/DashboardView';
@@ -107,7 +102,7 @@ export default function App() {
   if (!user) {
     return (
       <LoginView
-        onLoginSuccess={async (loggedInUser) => {
+        onLoginSuccess={async (loggedInUser: any) => {
           setUser(loggedInUser);
           setLoadingData(true);
           await fetchStoreData();
